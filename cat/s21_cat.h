@@ -14,6 +14,7 @@ typedef struct {
 } options;
 
 void s21_cat(int argc, char ** argv);
+void readFile(FILE * file, options config);
 int scanLongOptions(int y, char ** argv, options * config);
 void scanShortOptions(int y, char ** argv, options * config);
 int scanOptionsCommand(int argc, char ** argv, options * config);

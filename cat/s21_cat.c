@@ -24,7 +24,15 @@ void s21_cat(int argc, char ** argv) {
 void outputDataFiles(int indexStartFiles, int argc, char ** argv, options config) {
     for (int y = indexStartFiles; y < argc; y += 1) {
         FILE * file = fopen(argv[y], "r");
+        readFile(file, config);
+        fclose(file);
     }
+}
+
+void readFile(FILE * file, options config) {
+    char symbol = '0';
+    while (fscanf(file, "%c", &symbol) != EOF)
+        printf("%c", symbol);
 }
 
 int scanOptionsCommand(int argc, char ** argv, options * config) {
