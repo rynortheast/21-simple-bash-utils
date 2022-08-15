@@ -13,4 +13,10 @@ typedef struct {
     int t;
 } options;
 
+void s21_cat(int argc, char ** argv);
+int scanLongOptions(int y, char ** argv, options * config);
+void scanShortOptions(int y, char ** argv, options * config);
+int scanOptionsCommand(int argc, char ** argv, options * config);
+void outputDataFiles(int indexStartFiles, int argc, char ** argv, options config);
+
 #endif  // SRC_CAT_S21_CAT_H_
