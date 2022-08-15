@@ -41,7 +41,10 @@ int scanOptionsCommand(int argc, char ** argv, options * config) {
         if (argv[y][0] == '-') {
             if (scanLongOptions(y, argv, config) == 0)
                 scanShortOptions(y, argv, config);
-        } else indexStartFiles = y;
+        } else {
+            indexStartFiles = y;
+            break;
+        }
     }
     return indexStartFiles;
 }
