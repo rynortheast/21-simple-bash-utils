@@ -19,7 +19,7 @@
 
 — . . .
 
-## Overview of implemented "math.h" functions
+## Overview of implemented functions
 
 — . . .
 
