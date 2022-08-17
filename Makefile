@@ -1,6 +1,6 @@
 
-CAT_DIR = ./cat
-GREP_DIR = ./grep
+CAT_DIR = ./src/cat
+GREP_DIR = ./src/grep
 
 CAT_FILES = $(CAT_DIR)/s21_cat.c
 GREP_FILES = $(GREP_DIR)/s21_grep.c
