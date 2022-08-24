@@ -17,11 +17,11 @@ Implement some basic Bash utilities to work with texts from files using C langua
 
 ## Goal & requirements 
 
-. . .
+— In Progress. . .
 
 ## Key learnings
 
-. . .
+— In Progress. . .
 
 ## Overview of implemented code
 
