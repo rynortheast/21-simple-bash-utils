@@ -5,19 +5,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct {
-    int b;
-    int e;
-    int n;
-    int s;
-    int t;
-} options;
+#define SIZE 256
 
-void s21_cat(int argc, char ** argv);
-void readFile(FILE * file, options config);
-int scanLongOptions(int y, char ** argv, options * config);
-void scanShortOptions(int y, char ** argv, options * config);
-int scanOptionsCommand(int argc, char ** argv, options * config);
-void outputDataFiles(int indexStartFiles, int argc, char ** argv, options config);
+typedef struct ops {
+  int b;
+  int e;
+  int n;
+  int s;
+  int t;
+  int v;
+  int cnt;
+  int empty;
+  int new_line;
+  int eof;
+} ops;
+
+void s21_cat(FILE *file, ops options);
+void parse_file(char *name, ops options);
+int parse_ops(int argc, char **str, ops *options);
+void *check_real(void *ptr, size_t size);
+void print(char *line, ops options);
 
 #endif  // SRC_CAT_S21_CAT_H_

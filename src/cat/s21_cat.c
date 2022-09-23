@@ -1,68 +1,125 @@
 #include "s21_cat.h"
 
-int main(int argc, char ** argv) {
-    s21_cat(argc, argv);
-    return EXIT_SUCCESS;
-}
-
-void s21_cat(int argc, char ** argv) {
-
-    // printf("TEST: |%d| - |%s| - |%s|", argc, argv[0], argv[1]);
-
-    if (argc >= 2) {
-
-        options config = {0, 0, 0, 0, 0};
-
-        int indexStartFiles = scanOptionsCommand(argc, argv, &config);
-
-        // printf("TEST : %d : %d%d%d%d%d", indexStartFiles, config.b, config.e, config.n, config.s, config.t);
-
-        outputDataFiles(indexStartFiles, argc, argv, config);
+int main(int argc, char **argv) {
+  if (argc > 1) {
+    ops options = {0};
+    int file_idx = parse_ops(argc, argv, &options);
+    while (file_idx < argc) {
+      FILE *file;
+      file = fopen(argv[file_idx], "r");
+      if (NULL == file) {
+        fprintf(stderr, "s21_cat: %s: No such file or directory\n",
+                argv[file_idx]);
+      } else {
+        s21_cat(file, options);
+      }
+      file_idx++;
     }
+  }
+  return 0;
 }
 
-void outputDataFiles(int indexStartFiles, int argc, char ** argv, options config) {
-    for (int y = indexStartFiles; y < argc; y += 1) {
-        FILE * file = fopen(argv[y], "r");
-        if (file) readFile(file, config);
+int parse_ops(int argc, char **str, ops *options) {
+  int offset = 1;
+  while (offset < argc - 1 && str[offset][0] == '-') {
+    if (!strcmp(str[offset], "--number-nonblank") ||
+        (!strcmp(str[offset], "-b")))
+      options->b = 1;
+    if (!strcmp(str[offset], "-e")) {
+      options->e = 1;
+      options->v = 1;
     }
+    if (!strcmp(str[offset], "-E")) options->e = 1;
+    if (!strcmp(str[offset], "-n") || !strcmp(str[offset], "--number"))
+      options->n = 1;
+    if (!strcmp(str[offset], "-s") || !strcmp(str[offset], "--squeeze-blank"))
+      options->s = 1;
+    if (!strcmp(str[offset], "-t")) {
+      options->t = 1;
+      options->v = 1;
+    }
+    if (!strcmp(str[offset], "-T")) options->t = 1;
+    if (!strcmp(str[offset], "-v")) options->v = 1;
+    offset++;
+  }
+  if (options->b && options->n) {
+    options->n = 0;
+  }
+  return offset;
 }
 
-void readFile(FILE * file, options config) {
-    for (char symbol = '0'; fscanf(file, "%c", &symbol) != EOF;)
-        printf("%c", symbol);
-    fclose(file);
-}
-
-int scanOptionsCommand(int argc, char ** argv, options * config) {
-    int indexStartFiles = argc;
-    for (int y = 1; y < argc; y += 1) {
-        if (argv[y][0] == '-') {
-            if (scanLongOptions(y, argv, config) == 0)
-                scanShortOptions(y, argv, config);
-        } else {
-            indexStartFiles = y;
-            break;
+void s21_cat(FILE *file, ops options) {
+  char sym = '0';
+  while ((sym = getc(file)) != EOF) {
+    char *str = (char *)calloc(SIZE, 1);
+    if (str) {
+      int idx = 0;
+      while (sym != EOF && sym != '\n' && str) {
+        str[idx] = sym;
+        idx++;
+        sym = getc(file);
+        if (idx % SIZE == 0 && idx > 0) {
+          str = (char *)check_real(str, idx + SIZE);
         }
+      }
+      if (sym == EOF) {
+        options.eof = 1;
+      }
+      if (idx == 0) {
+        options.empty++;
+      } else {
+        options.empty = 0;
+      }
+      str = (char *)check_real(str, idx + 1);
+      if (str) {
+        str[idx] = '\n';
+        if (!(options.b && options.empty) &&
+            (!options.s || options.empty <= 1)) {
+          options.cnt++;
+        }
+        print(str, options);
+      }
+      free(str);
     }
-    return indexStartFiles;
+  }
 }
 
-int scanLongOptions(int y, char ** argv, options * config) {
-    int status = 1;
-    if (strcmp(argv[y], "--number") == 0) config -> n = 1;
-    else if (strcmp(argv[y], "--squeeze-blank") == 0) config -> s = 1;
-    else if (strcmp(argv[y], "--number-nonblank") == 0) config -> b = 1;
-    else status = 0;
-    return status;
+void print(char *line, ops options) {
+  if (options.empty < 2 || !options.s) {
+    if (options.n || (options.b && line[0] != '\n')) {
+      printf("%6d\t", options.cnt);
+    }
+    for (int i = 0; line[i] != '\n'; i++) {
+      if (options.v) {
+        if (line[i] >= 0 && line[i] <= 31 && line[i] != 9) {
+          printf("^%c", 64 + line[i]);
+          continue;
+        } else if (line[i] == 127) {
+          printf("^?");
+          continue;
+        } else if (line[i] < -96) {
+          printf("M-^%c", line[i] - 64);
+          continue;
+        }
+      }
+      if (options.t && line[i] == 9) {
+        printf("^I");
+      } else {
+        printf("%c", line[i]);
+      }
+    }
+    if (!options.eof) {
+      if (options.e)
+        printf("$\n");
+      else
+        printf("\n");
+    }
+  }
 }
 
-void scanShortOptions(int y, char ** argv, options * config) {
-    for (size_t x = 1; x < strlen(argv[y]); x += 1) {
-        if (argv[y][x] == 'b')config -> b = 1;
-        else if (argv[y][x] == 'n') config -> n = 1;
-        else if (argv[y][x] == 's') config -> s = 1;
-        else if (strchr("eE", argv[y][x])) config -> e = 1;
-        else if (strchr("tT", argv[y][x])) config -> t = 1;
-    }
+void *check_real(void *ptr, size_t size) {
+  void *tmp;
+  tmp = realloc(ptr, size);
+  if (!tmp && ptr) free(ptr);
+  return (tmp);
 }
