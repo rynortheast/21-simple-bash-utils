@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SIZE 256
-
 #define ERROR_01 "s21_cat: %s: No such file or directory\n"
 
 typedef struct {
@@ -17,15 +15,14 @@ typedef struct {
   int t;
   int v;
   int nth;
-  int countEmptyLine;
-  int new_line;
   int isEOF;
+  int countEmptyLine;
 } options;
 
+void setupConfig(options *config, int length, char symbol);
 int scanOptions(int argc, char **argv, options *config);
 void *increaseLengthLine(char *line, int size);
-void setupConfig(options *config, int length, char symbol);
-void s21_cat(FILE *file, options config);
 void printLine(char *line, options options);
+void s21_cat(FILE *file, options config);
 
 #endif  // SRC_CAT_S21_CAT_H_

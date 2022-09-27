@@ -14,6 +14,23 @@ int main(int argc, char **argv) {
   return 0;
 }
 
+void s21_cat(FILE *file, options config) {
+  for (char sym = '0'; (sym = getc(file)) != EOF;) {
+    int length = 0;
+    char *line = calloc(256, 1);
+
+    for (line[length] = '\n'; sym != EOF && sym != '\n'; sym = getc(file)) {
+      line[length] = sym;
+      line[length += 1] = '\n';
+      if (length % 256 == 0) line = increaseLengthLine(line, length + 256);
+    }
+
+    setupConfig(&config, length, sym);
+    printLine(line, config);
+    free(line);
+  }
+}
+
 int scanOptions(int argc, char **argv, options *config) {
   int indexStartFiles = 1, x = 1;
   for (; (x < argc - 1) && argv[x][0] == '-'; indexStartFiles = (x += 1)) {
@@ -40,39 +57,7 @@ int scanOptions(int argc, char **argv, options *config) {
   return indexStartFiles;
 }
 
-void *increaseLengthLine(char *line, int size) {
-  char *aux = realloc(line, size);
-  if (!aux && line) free(line);
-  return aux;
-}
-
-void setupConfig(options *config, int length, char symbol) {
-  config->isEOF = symbol == EOF ? 1 : 0;
-  config->countEmptyLine = length == 0 ? config->countEmptyLine + 1 : 0;
-  if (!(config->b && config->countEmptyLine)) {
-    if (!config->s || config->countEmptyLine <= 1) {
-      config->nth += 1;
-    }
-  }
-}
-
-void s21_cat(FILE *file, options config) {
-  for (char sym = '0'; (sym = getc(file)) != EOF;) {
-    int length = 0;
-    char *line = calloc(256, 1);
-
-    for (line[length] = '\n'; sym != EOF && sym != '\n'; sym = getc(file)) {
-      line[length] = sym;
-      line[length += 1] = '\n';
-      if (length % 256 == 0) line = increaseLengthLine(line, length + 256);
-    }
-
-    setupConfig(&config, length, sym);
-    printLine(line, config);
-    free(line);
-  }
-}
-
+//  TODO [printLine] Необходим рефакторинг.
 void printLine(char *line, options config) {
   if (config.countEmptyLine <= 1 || !config.s) {
     if (config.n || (config.b && line[0] != '\n')) printf("%6d\t", config.nth);
@@ -96,4 +81,17 @@ void printLine(char *line, options config) {
     }
     if (!config.isEOF) config.e ? printf("$\n") : printf("\n");
   }
+}
+
+void setupConfig(options *config, int length, char symbol) {
+  config->isEOF = symbol == EOF ? 1 : 0;
+  if (!(config->b && config->countEmptyLine))
+    if (!config->s || config->countEmptyLine <= 1) config->nth += 1;
+  config->countEmptyLine = length == 0 ? config->countEmptyLine + 1 : 0;
+}
+
+void *increaseLengthLine(char *line, int size) {
+  char *aux = realloc(line, size);
+  if (!aux && line) free(line);
+  return aux;
 }
