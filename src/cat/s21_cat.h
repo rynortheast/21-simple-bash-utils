@@ -7,23 +7,25 @@
 
 #define SIZE 256
 
-typedef struct ops {
+#define ERROR_01 "s21_cat: %s: No such file or directory\n"
+
+typedef struct {
   int b;
   int e;
   int n;
   int s;
   int t;
   int v;
-  int cnt;
-  int empty;
+  int nth;
+  int countEmptyLine;
   int new_line;
-  int eof;
-} ops;
+  int isEOF;
+} options;
 
-void s21_cat(FILE *file, ops options);
-void parse_file(char *name, ops options);
-int parse_ops(int argc, char **str, ops *options);
-void *check_real(void *ptr, size_t size);
-void print(char *line, ops options);
+int scanOptions(int argc, char **argv, options *config);
+void *increaseLengthLine(char *line, int size);
+void setupConfig(options *config, int length, char symbol);
+void s21_cat(FILE *file, options config);
+void printLine(char *line, options options);
 
 #endif  // SRC_CAT_S21_CAT_H_
