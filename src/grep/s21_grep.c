@@ -5,6 +5,9 @@
 //  Необходимо заново продумать структуру, посмотреть как
 //  можно упростить некоторые рабочие функции.
 
+//  TODO [main] Необходимо реализацию s21_cat поместить в отдельную
+//  фунцию, чтоб иметь альтернативные варианты использования.
+//  Запускать отдельно или использовать внутри другого кода.
 int main(int argc, char **argv) {
   if (argc > 1) {
     char *temp = NULL;
@@ -19,6 +22,8 @@ int main(int argc, char **argv) {
 }
 
 //  TODO [scanOptions] Необходимо подумать стоит ли тут оставлять getopt.
+//  TODO [scanOptions] Необходим небольшой рефакторинг. Разобратька как
+//  лучше обработать шаблон внутри команды.
 int scanOptions(int argc, char **argv, options *config, char **template) {
   for (int sym = 0; (sym = getopt(argc, argv, "e:ivclnhsf:o")) != (-1);) {
     switch (sym) {
@@ -61,6 +66,9 @@ int scanOptions(int argc, char **argv, options *config, char **template) {
   return optind += 1;
 }
 
+//  TODO [s21_grep] Необходим рефакторинг.
+//  Функции, отвественные за вывод в консоль вышли
+//  сложными. Нужно будет подумать над другой структурой.
 void s21_grep(char *path, options config, char *template) {
   FILE *file = fopen(path, "r");
   if (file != NULL) {
@@ -86,7 +94,7 @@ void s21_grep(char *path, options config, char *template) {
 }
 
 //  TODO [setConfigF] Необходим рефакторинг.
-//  Не нравится, что каждую интерацию происходит выделение памяти.
+//  Не уверен, что правильно каждую интерацию выделять память.
 void setConfigF(options *config, char **template, char *optarg) {
   FILE *file = fopen(optarg, "r");
   if (file != NULL) {
@@ -131,9 +139,6 @@ void printfAuxData(options config, char *path) {
   if (config.l && config.countMatches) printf("%s\n", path);
 }
 
-//  TODO [printMainData] Необходим рефакторинг.
-//  Функции, отвественные за вывод в консоль вышли
-//  сложными. Нужно будет подумать над другой структурой.
 void printMainData(char *line, options *config, char *template, char *path) {
   regex_t regex;
   if (regcomp(&regex, template, config->i ? REG_ICASE : REG_EXTENDED) == 0) {

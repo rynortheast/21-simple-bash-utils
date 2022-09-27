@@ -1,5 +1,8 @@
 #include "s21_cat.h"
 
+//  TODO [main] Необходимо реализацию s21_cat поместить в отдельную
+//  фунцию, чтоб иметь альтернативные варианты использования.
+//  Запускать отдельно или использовать внутри другого кода.
 int main(int argc, char **argv) {
   if (argc > 1) {
     options config = {0};
@@ -15,12 +18,12 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-//  TODO [s21_cat] Необходим рефакторинг.
-//  Не нравится, что каждую интерацию происходит выделение памяти.
+//  TODO [s21_cat] Необходим рефакторинг кода.
+//  Не уверен, что правильно каждую интерацию выделять память.
 void s21_cat(FILE *file, options config) {
   for (char sym = '0'; (sym = getc(file)) != EOF;) {
-    int length = 0;
     char *line = calloc(256, 1);
+    int length = 0;
 
     for (line[length] = '\n'; sym != EOF && sym != '\n'; sym = getc(file)) {
       line[length] = sym;
@@ -60,7 +63,7 @@ int scanOptions(int argc, char **argv, options *config) {
   return indexStartFiles;
 }
 
-//  TODO [printLine] Необходим рефакторинг.
+//  TODO [printLine] Необходим рефакторинг кода.
 void printLine(char *line, options config) {
   if (config.countEmptyLine <= 1 || !config.s) {
     if (config.n || (config.b && line[0] != '\n')) printf("%6d\t", config.nth);
