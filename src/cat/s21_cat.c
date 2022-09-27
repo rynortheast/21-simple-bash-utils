@@ -9,11 +9,14 @@ int main(int argc, char **argv) {
         fprintf(stderr, ERROR_01, argv[x]);
       else
         s21_cat(file, config);
+      fclose(file);
     }
   }
   return 0;
 }
 
+//  TODO [s21_cat] Необходим рефакторинг.
+//  Не нравится, что каждую интерацию происходит выделение памяти.
 void s21_cat(FILE *file, options config) {
   for (char sym = '0'; (sym = getc(file)) != EOF;) {
     int length = 0;
@@ -92,6 +95,5 @@ void setupConfig(options *config, int length, char symbol) {
 
 void *increaseLengthLine(char *line, int size) {
   char *aux = realloc(line, size);
-  if (!aux && line) free(line);
   return aux;
 }
