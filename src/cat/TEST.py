@@ -1,4 +1,5 @@
 #!python3
+
 from itertools import combinations_with_replacement
 from random import shuffle
 from os import system
@@ -49,19 +50,21 @@ def check_files(a, b):
                 print("Line:", count, " char:", i)
                 input("Press any key to continue:\n")
 
+            else:
+                print("\033[42m\033[1m YES \033[0m")
+
 
 for test in range(len(all_var)):
     cur_flags_ = all_var[test]
     for cur_flags in (cur_flags_, set(cur_flags_)):
         # test with all flags
         shuffle(files)
-        print(f"Current test: {test + 1}\t/\t{len(all_var)}")
+        print(f"Current TEST [{test + 1} / {len(all_var)}] - ", end='')
         for i, func in (('0', my_cat), ('1', cat)):
             m_str = f'{func} {" ".join(cur_flags)} {" ".join(files)} > {testing_file+i+testing_file_format}'
-            print("Command:", m_str)
+            system("echo '{}' >> commands.ntesting".format(m_str));
             system(m_str)
         check_files(testing_file+'0'+testing_file_format,
                     testing_file+'1'+testing_file_format)
-        print()
 
 system("rm -rf *.ntesting")
