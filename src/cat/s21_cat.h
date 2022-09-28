@@ -6,6 +6,7 @@
 #include <string.h>
 
 #define ERROR_01 "s21_cat: %s: No such file or directory\n"
+#define ERROR_02 "s21_cat: invalid option -- '%c'\n"
 
 typedef struct {
   int b;
@@ -14,15 +15,16 @@ typedef struct {
   int s;
   int t;
   int v;
-  int nth;
-  int isEOF;
-  int countEmptyLine;
+  int newLine;
+  int counterB;
+  int counterS;
+  int emptyLine;
+  int numberFiles;
 } options;
 
-void setupConfig(options *config, int length, char symbol);
+void s21_cat_programm(int argc, char **argv);
+
 int scanOptions(int argc, char **argv, options *config);
-void *increaseLengthLine(char *line, int size);
-void printLine(char *line, options *options);
-void s21_cat(FILE *file, options *config);
+FILE *printData(FILE *file, options *config);
 
 #endif  // SRC_CAT_S21_CAT_H_
