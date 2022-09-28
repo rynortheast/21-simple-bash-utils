@@ -25,6 +25,8 @@ typedef struct {
   int countMatches;
 } options;
 
+void s21_grep_programm(int argc, char **argv);
+
 void printfConfigO(regex_t my_regex, char *str, options config, char *path);
 int scanOptions(int argc, char **argv, options *config, char **template);
 void printMainData(char *str, options *options, char *tmpl, char *name);

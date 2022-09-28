@@ -5,10 +5,12 @@
 //  Необходимо заново продумать структуру, посмотреть как
 //  можно упростить некоторые рабочие функции.
 
-//  TODO [main] Необходимо реализацию s21_cat поместить в отдельную
-//  фунцию, чтоб иметь альтернативные варианты использования.
-//  Запускать отдельно или использовать внутри другого кода.
 int main(int argc, char **argv) {
+  s21_grep_programm(argc, argv);
+  return 0;
+}
+
+void s21_grep_programm(int argc, char **argv) {
   if (argc > 1) {
     char *temp = NULL;
     options config = {0};
@@ -18,12 +20,8 @@ int main(int argc, char **argv) {
 
     if (temp != NULL) free(temp);
   }
-  return 0;
 }
 
-//  TODO [scanOptions] Необходимо подумать стоит ли тут оставлять getopt.
-//  TODO [scanOptions] Необходим небольшой рефакторинг. Разобратька как
-//  лучше обработать шаблон внутри команды.
 int scanOptions(int argc, char **argv, options *config, char **template) {
   for (int sym = 0; (sym = getopt(argc, argv, "e:ivclnhsf:o")) != (-1);) {
     switch (sym) {
@@ -55,15 +53,16 @@ int scanOptions(int argc, char **argv, options *config, char **template) {
         setConfigE(config, template, optarg);
         break;
       case 'f':
-        setConfigE(config, template, optarg);
+        setConfigF(config, template, optarg);
         break;
     }
   }
   if ((config->e || config->f) == 0) {
     createTemplate(template, argv[optind]);
+    optind += 1;
   }
   setupConfig(config, argc);
-  return optind += 1;
+  return optind;
 }
 
 //  TODO [s21_grep] Необходим рефакторинг.
@@ -128,7 +127,7 @@ void setConfigE(options *config, char **template, char *optarg) {
 }
 
 void printfAuxData(options config, char *path) {
-  if (config.c) {
+  if (config.c && config.l == 0) {
     if (config.l) {
       config.countFiles > 1 ? printf("%s:1\n", path) : printf("1\n");
     } else {
@@ -145,9 +144,9 @@ void printMainData(char *line, options *config, char *template, char *path) {
     if (regexec(&regex, line, 0, NULL, 0) == config->v) {
       config->countMatches += 1;
       if ((config->c || config->l) == 0) {
-        if (config->o)
-          printfConfigO(regex, line, *config, path);
-        else {
+        if (config->o) {
+          if (!config->v) printfConfigO(regex, line, *config, path);
+        } else {
           if (config->countFiles > 1 && !config->h) printf("%s:", path);
           if (config->n) printf("%i:", config->numberLine);
           printf("%s\n", line);
@@ -215,8 +214,8 @@ void printfConfigO(regex_t regex, char *line, options config, char *path) {
 }
 
 void setupConfig(options *config, int argc) {
-  if (config->o && (config->l || config->v || config->c)) config->o = 0;
-  config->countFiles = argc - optind - 1;
+  if (config->o && (config->l || config->c)) config->o = 0;
+  config->countFiles = argc - optind;
 }
 
 int createTemplate(char **str, char *optarg) {
