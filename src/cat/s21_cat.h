@@ -22,7 +22,7 @@ typedef struct {
 void setupConfig(options *config, int length, char symbol);
 int scanOptions(int argc, char **argv, options *config);
 void *increaseLengthLine(char *line, int size);
-void printLine(char *line, options options);
-void s21_cat(FILE *file, options config);
+void printLine(char *line, options *options);
+void s21_cat(FILE *file, options *config);
 
 #endif  // SRC_CAT_S21_CAT_H_

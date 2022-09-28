@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
       if (file == NULL)
         fprintf(stderr, ERROR_01, argv[x]);
       else
-        s21_cat(file, config);
+        s21_cat(file, &config);
       fclose(file);
     }
   }
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 
 //  TODO [s21_cat] Необходим рефакторинг кода.
 //  Не уверен, что правильно каждую интерацию выделять память.
-void s21_cat(FILE *file, options config) {
+void s21_cat(FILE *file, options *config) {
   for (char sym = '0'; (sym = getc(file)) != EOF;) {
     char *line = calloc(256, 1);
     int length = 0;
@@ -31,7 +31,7 @@ void s21_cat(FILE *file, options config) {
       if (length % 256 == 0) line = increaseLengthLine(line, length + 256);
     }
 
-    setupConfig(&config, length, sym);
+    setupConfig(config, length, sym);
     printLine(line, config);
     free(line);
   }
@@ -64,11 +64,12 @@ int scanOptions(int argc, char **argv, options *config) {
 }
 
 //  TODO [printLine] Необходим рефакторинг кода.
-void printLine(char *line, options config) {
-  if (config.countEmptyLine <= 1 || !config.s) {
-    if (config.n || (config.b && line[0] != '\n')) printf("%6d\t", config.nth);
+void printLine(char *line, options *config) {
+  if (config->countEmptyLine <= 1 || !config->s) {
+    if (config->n || (config->b && line[0] != '\n'))
+      printf("%6d\t", config->nth);
     for (int x = 0; line[x] != '\n'; x += 1) {
-      if (config.v) {
+      if (config->v) {
         if (line[x] >= 0 && line[x] <= 31 && line[x] != 9) {
           printf("^%c", 64 + line[x]);
           continue;
@@ -80,12 +81,12 @@ void printLine(char *line, options config) {
           continue;
         }
       }
-      if (config.t && line[x] == 9)
+      if (config->t && line[x] == 9)
         printf("^I");
       else
         printf("%c", line[x]);
     }
-    if (!config.isEOF) config.e ? printf("$\n") : printf("\n");
+    if (!config->isEOF) config->e ? printf("$\n") : printf("\n");
   }
 }
 
