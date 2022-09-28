@@ -8,10 +8,7 @@ my_cat = "./s21_cat"
 cat = "cat"
 
 files = [
-    'TEST_FILES/SUITE_001',
-    'TEST_FILES/SUITE_002',
-    'TEST_FILES/SUITE_003',
-    'TEST_FILES/SUITE_004',
+    'TEST_FILES/SUITE_001'
 ]
 
 testing_file = 'testing_file'
