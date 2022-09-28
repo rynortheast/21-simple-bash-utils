@@ -27,11 +27,11 @@ typedef struct {
 
 void s21_grep_programm(int argc, char **argv);
 
-void printfConfigO(regex_t my_regex, char *str, options config, char *path);
 int scanOptions(int argc, char **argv, options *config, char **template);
 void printMainData(char *str, options *options, char *tmpl, char *name);
 void setConfigF(options *config, char **template, char *optarg);
 void setConfigE(options *config, char **template, char *optarg);
+void printfConfigO(regex_t my_regex, char *str, options config);
 void s21_grep(char *name, options config, char *tmpl);
 void printfAuxData(options config, char *path);
 void *increaseLengthStr(void *str, int size);

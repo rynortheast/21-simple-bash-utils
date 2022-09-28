@@ -127,7 +127,7 @@ void setConfigE(options *config, char **template, char *optarg) {
 }
 
 void printfAuxData(options config, char *path) {
-  if (config.c && config.l == 0) {
+  if (config.c) {
     if (config.l) {
       config.countFiles > 1 ? printf("%s:1\n", path) : printf("1\n");
     } else {
@@ -144,13 +144,12 @@ void printMainData(char *line, options *config, char *template, char *path) {
     if (regexec(&regex, line, 0, NULL, 0) == config->v) {
       config->countMatches += 1;
       if ((config->c || config->l) == 0) {
-        if (config->o) {
-          if (!config->v) printfConfigO(regex, line, *config, path);
-        } else {
-          if (config->countFiles > 1 && !config->h) printf("%s:", path);
-          if (config->n) printf("%i:", config->numberLine);
+        if (config->countFiles > 1 && !(config->h)) printf("%s:", path);
+        if (config->n) printf("%i:", config->numberLine);
+        if (!config->o)
           printf("%s\n", line);
-        }
+        else
+          printfConfigO(regex, line, *config);
       }
     }
     regfree(&regex);
@@ -172,8 +171,7 @@ void printMainData(char *line, options *config, char *template, char *path) {
 //   }
 // }
 
-void printfConfigO(regex_t regex, char *line, options config, char *path) {
-  int countMatches = 1;
+void printfConfigO(regex_t regex, char *line, options config) {
   while (regexec(&regex, line, 0, NULL, 0) == config.v) {
     char *aux = (char *)calloc(strlen(line) + 1, 1);
     strcpy(aux, line);
@@ -199,8 +197,6 @@ void printfConfigO(regex_t regex, char *line, options config, char *path) {
       i--;
     }
     aux[0] = line[start];
-    if (config.countFiles > 1 && !config.h) printf("%s:", path);
-    if (config.n) printf("%i:", config.numberLine);
     printf("%s\n", aux);
     free(aux);
     i = start + 1;
@@ -209,12 +205,11 @@ void printfConfigO(regex_t regex, char *line, options config, char *path) {
       i++;
     }
     line[i - start - 1] = 0;
-    countMatches += 1;
   }
 }
 
 void setupConfig(options *config, int argc) {
-  if (config->o && (config->l || config->c)) config->o = 0;
+  if (config->o && (config->l || config->v || config->c)) config->o = 0;
   config->countFiles = argc - optind;
 }
 
