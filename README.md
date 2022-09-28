@@ -1,7 +1,7 @@
 
 # S21_BashUtils
 
-<div align="center">PREVIEW_WILL_BE_ADDED_LATER.png</div>
+<!-- <div align="center">PREVIEW_WILL_BE_ADDED_LATER.png</div>
 
 ## Table of contents
 * [About](#about)
@@ -69,4 +69,4 @@ COMMAND: `grep [options] template [file_name]` | 🔲 |
 ## Credits
 
 - Developer: [RV-304 (@rynortheast)](https://github.com/rynortheast)
-- 21-SCHOOL for providing this task as a part of our curriculum ✌️🔥
+- 21-SCHOOL for providing this task as a part of our curriculum ✌️🔥 -->
