@@ -4,15 +4,15 @@ from itertools import combinations_with_replacement
 from random import shuffle
 from os import system
 
-my_cat = "./s21_cat"
-cat = "cat"
+falshivka = "./s21_cat"
+original = "cat"
 
-files = [
-    'TEST_FILES/SUITE_001'
+file_name = 'TEST-FILE'
+file_format = ".testing"
+
+suite = [
+    'TEST-SUITE/TEST-FILE_002'
 ]
-
-testing_file = 'testing_file'
-testing_file_format = ".ntesting"
 
 flags = {
     '-b',
@@ -20,11 +20,12 @@ flags = {
     '-n',
     '-s',
     '-v',
-    '-t'}
+    '-t'
+}
 
 all_var = list(combinations_with_replacement(flags, len(flags)))
 
-def check_files(a, b):
+def file_comparison(a, b):
     with open(a) as file_1:
         with open(b) as file_2:
             a, b = file_1.read(), file_2.read()
@@ -54,14 +55,13 @@ def check_files(a, b):
 for test in range(len(all_var)):
     cur_flags_ = all_var[test]
     for cur_flags in (cur_flags_, set(cur_flags_)):
-        # test with all flags
-        shuffle(files)
+        shuffle(suite)
         print(f"Current TEST [{test + 1} / {len(all_var)}] - ", end='')
-        for i, func in (('0', my_cat), ('1', cat)):
-            m_str = f'{func} {" ".join(cur_flags)} {" ".join(files)} > {testing_file+i+testing_file_format}'
-            system("echo '{}' >> commands.ntesting".format(m_str));
+        for i, func in (('0', falshivka), ('1', original)):
+            m_str = f'{func} {" ".join(cur_flags)} {" ".join(suite)} > {file_name+"-"+i+file_format}'
+            system("echo '{}' >> commands.testing".format(m_str));
             system(m_str)
-        check_files(testing_file+'0'+testing_file_format,
-                    testing_file+'1'+testing_file_format)
+        file_comparison(file_name+'-0'+file_format,
+                        file_name+'-1'+file_format)
 
-system("rm -rf *.ntesting")
+system('rm -rf *' + file_format)
