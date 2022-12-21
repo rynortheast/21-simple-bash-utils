@@ -79,7 +79,7 @@ void s21_grep(char *path, options config, char *template) {
       for (line[length] = '\0'; sym != EOF && sym != '\n'; sym = getc(file)) {
         line[length] = sym;
         line[length += 1] = '\0';
-        if (length % 256 == 0) line = increaseLengthStr(line, length + 256);
+        if (length % 255 == 0) line = increaseLengthStr(line, length + 256);
       }
 
       printMainData(line, &config, template, path);
@@ -104,7 +104,8 @@ void setConfigF(options *config, char **template, char *optarg) {
       for (line[length] = '\0'; sym != EOF && sym != '\n'; sym = getc(file)) {
         line[length] = sym;
         line[length += 1] = '\0';
-        if (length % 256 == 0) line = increaseLengthStr(line, length + 256);
+        if (length % 256 == 0)
+          line = (char *)increaseLengthStr(line, length + 256);
       }
 
       if (!(config->e || config->f))
