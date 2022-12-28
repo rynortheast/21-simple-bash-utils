@@ -52,12 +52,12 @@ TEMPLATE: `grep [OPTION] [TEMPLATE] [FILE]`
 ## Usage
 
 1. Clone this repository via
-   - SSH `git@github.com:rynortheast/S21_string.git` or
-   - HTTPS `https://github.com/rynortheast/S21_string.git`
+   - SSH `git@github.com:rynortheast/21-simple-bash-utils.git` or
+   - HTTPS `https://github.com/rynortheast/21-simple-bash-utils.git`
 2. Change code base if necessary
 3. Working with s21_cat:
    - Run `make s21_cat` to build programm
-   - Run `python TEST.py` to run main tests
+   - Run `make test` to run main tests
 4. Working with s21_grep:
    - Run `make s21_grep` to build programm
-   - Run `bash TEST.sh` to run main tests
+   - Run `make test` to run main tests

@@ -5,8 +5,6 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-//  TODO [s21_cat] Можно реализовать альтернативный
-//  вариант функции для работы внутри другого кода.
 void s21_cat_programm(int argc, char **argv) {
   if (argc > 1) {
     options config = {0};
@@ -55,9 +53,6 @@ int scanOptions(int argc, char **argv, options *config) {
   return status;
 }
 
-//  TODO [printData] Необходим рефакторинг кода.
-//  Нужно подумать как можно переписать условия,
-//  чтоб это было более-менее читабельно.
 FILE *printData(FILE *file, options *config) {
   for (char sym = '0'; (sym = getc(file)) != EOF;) {
     config->emptyLine = 0;

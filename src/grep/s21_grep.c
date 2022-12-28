@@ -1,10 +1,5 @@
 #include "s21_grep.h"
 
-//  TODO [main] Хотелось бы полностью переписать функцию,
-//  т.к. местами есть чувство, что код выполняется странно.
-//  Необходимо заново продумать структуру, посмотреть как
-//  можно упростить некоторые рабочие функции.
-
 int main(int argc, char **argv) {
   s21_grep_programm(argc, argv);
   return 0;
@@ -65,9 +60,6 @@ int scanOptions(int argc, char **argv, options *config, char **template) {
   return optind;
 }
 
-//  TODO [s21_grep] Необходим рефакторинг.
-//  Функции, отвественные за вывод в консоль вышли
-//  сложными. Нужно будет подумать над другой структурой.
 void s21_grep(char *path, options config, char *template) {
   FILE *file = fopen(path, "r");
   if (file != NULL) {
@@ -92,8 +84,6 @@ void s21_grep(char *path, options config, char *template) {
   }
 }
 
-//  TODO [setConfigF] Необходим рефакторинг.
-//  Не уверен, что правильно каждую интерацию выделять память.
 void setConfigF(options *config, char **template, char *optarg) {
   FILE *file = fopen(optarg, "r");
   if (file != NULL) {
@@ -156,21 +146,6 @@ void printMainData(char *line, options *config, char *template, char *path) {
     regfree(&regex);
   }
 }
-
-//  TODO [printfConfigO] Альтернативная версия функции.
-// void printfConfigO(regex_t regex, char *line, options config) {
-//   while (regexec(&regex, line, 0, NULL, 0) == config.v) {
-//     char *aux = calloc(strlen(line) + 1, 1);
-
-//     int end = strlen(strcpy(aux, line));
-//     for (; regexec(&regex, aux, 0, NULL, 0) == config.v; end -= 1)
-//       aux[end - 1] = '\0';
-//     aux[end] = line[end];
-
-//     int start = 1;
-//     for (; regexec(&regex, aux + start, 0, NULL, 0) == config.v;) start += 1;
-//   }
-// }
 
 void printfConfigO(regex_t regex, char *line, options config) {
   while (regexec(&regex, line, 0, NULL, 0) == config.v) {
